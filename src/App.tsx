@@ -22,9 +22,9 @@ export default function App() {
   const [selectedSalon, setSelectedSalon] = useState<Salon | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
   const [isDevSwitcherOpen, setIsDevSwitcherOpen] = useState(false);
   const [overrideRole, setOverrideRole] = useState<'customer' | 'owner' | 'admin' | null>(null);
+
 
   const [showDashboardMobile, setShowDashboardMobile] = useState(false);
 
@@ -134,7 +134,15 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+    setOverrideRole(null);
+    setUserRole(null);
+    setUser(null);
+    setBookings([]);
     setShowDashboardMobile(false);
   };
 
@@ -211,7 +219,7 @@ export default function App() {
         onSelectRole={setOverrideRole}
         currentOverride={overrideRole}
       />
-      
+
       <footer className="shrink-0 bg-[#FDFBF7] py-2 px-4 flex justify-end z-50 border-t border-stone-200/50">
         <button 
           onClick={() => setIsDevSwitcherOpen(true)} 
